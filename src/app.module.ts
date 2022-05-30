@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AnnouncementsModule } from './announcements/announcements.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { ProfilePictureModule } from './profile-picture/profile-picture.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     PrismaModule,
     AnnouncementsModule,
     AuthModule,
+    ProfilePictureModule,
   ],
   controllers: [AppController],
   providers: [
