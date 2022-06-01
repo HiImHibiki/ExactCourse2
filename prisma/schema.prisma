@@ -54,3 +54,36 @@ model ProfilePicture {
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
 }
+
+model Mentor {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}
+
+model StudentInfo {
+  id String @id @default(cuid())
+  level Int
+  exp Int
+  badge Int
+  activityPoint Int
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}
+
+model StudentDetail {
+  id String @id @default(cuid())
+  score Int
+  
+}
+
+model Course {
+  id String @id @default(cuid())
+  name String
+  detail String?
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}

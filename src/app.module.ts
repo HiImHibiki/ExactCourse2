@@ -8,6 +8,7 @@ import { AnnouncementsModule } from './announcements/announcements.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ProfilePictureModule } from './profile-picture/profile-picture.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ProfilePictureModule } from './profile-picture/profile-picture.module';
     AnnouncementsModule,
     AuthModule,
     ProfilePictureModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
