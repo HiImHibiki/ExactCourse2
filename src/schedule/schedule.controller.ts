@@ -20,7 +20,7 @@ export class ScheduleController {
   @Post(':id')
   async addStudentToSchedule(@Param('id') id: string, @Student() student) {
     // console.log(typeof student.id);
-    return await this.scheduleService.addStudentToSchedule(id, student.id);
+    return await this.scheduleService.addStudentToSchedule(id, student);
   }
 
   @Get('myclass')

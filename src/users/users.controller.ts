@@ -9,7 +9,7 @@ export class UsersController {
 
   @Get('me')
   async getMe(@Student() user) {
-    return user;
+    return await this.userService.getMe(user);
   }
 
   @Post('attendance')

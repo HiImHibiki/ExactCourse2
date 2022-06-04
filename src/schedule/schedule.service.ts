@@ -53,11 +53,15 @@ export class ScheduleService {
   }
 
   async getSchedules() {
-    const schedules = await this.prismaService.course.findMany();
+    const schedules = await this.prismaService.course.findMany({
+      orderBy: {
+        dateStart: 'asc',
+      },
+    });
     return schedules;
   }
 
-  async addStudentToSchedule(courseId: string, studentId: string) {
+  async addStudentToSchedule(courseId: string, student: Student) {
     const course = await this.prismaService.course.findUnique({
       where: { id: courseId },
     });
@@ -68,9 +72,20 @@ export class ScheduleService {
       throw new BadRequestException('Class is full');
     }
 
+    const studentStatus = await this.prismaService.studentStatus.findUnique({
+      where: {
+        id: student.studentStatusId,
+      },
+    });
+    if (studentStatus.attendance == 0) {
+      throw new BadRequestException(
+        'Your attendance is 0. Please add more attendance',
+      );
+    }
+
     const courseStudent = await this.prismaService.courseStudent.findFirst({
       where: {
-        studentId: studentId,
+        studentId: student.id,
         courseId: courseId,
       },
     });
@@ -81,7 +96,7 @@ export class ScheduleService {
     const newCourseStudent = await this.prismaService.courseStudent.create({
       data: {
         student: {
-          connect: { id: studentId },
+          connect: { id: student.id },
         },
         course: {
           connect: { id: courseId },
@@ -100,9 +115,24 @@ export class ScheduleService {
       },
     });
 
+    const level = Math.floor((studentStatus.expPoint + 5) / 100) + 1;
+
+    const updateStatus = await this.prismaService.studentStatus.update({
+      where: {
+        id: student.studentStatusId,
+      },
+      data: {
+        expPoint: {
+          increment: 5,
+        },
+        level: level,
+      },
+    });
+
     return {
       updateCapacity,
       newCourseStudent,
+      updateStatus,
     };
   }
 
