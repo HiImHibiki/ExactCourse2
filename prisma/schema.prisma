@@ -20,36 +20,32 @@ model Announcement {
 }
 
 enum Gender {
-  MALE
-  FEMALE
+  Male
+  Female
 }
 
-enum Role {
-  MENTOR
-  STUDENT
-}
-
-model User {
+model Student {
   id String @id @default(cuid())
   name String
-  profilePicture ProfilePicture? @relation(fields: [profilePictureId], references: [id])
-  profilePictureId String? @unique
+  profilePicture StudentProfilePicture? @relation(fields: [profilePictureId], references: [id])
+  profilePictureId String?
   phoneNumber String @unique
   email String @unique
   password String
   birthday DateTime
-  role Role @default(STUDENT)
   gender Gender
+  courses CourseStudent[]
+
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
 }
 
-model ProfilePicture {
+model StudentProfilePicture {
   id String @id @default(cuid())
   name String
   path String
   mimetype String
-  user User?
+  student Student?
 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
@@ -57,33 +53,50 @@ model ProfilePicture {
 
 model Mentor {
   id String @id @default(cuid())
+  name String
+  teachingMethod String
+  rating Int
+  profilePicture MentorProfilePicture? @relation(fields: [profilePictureId], references: [id])
+  profilePictureId String? @unique
+  course Course[]
 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
 }
 
-model StudentInfo {
+model MentorProfilePicture {
   id String @id @default(cuid())
-  level Int
-  exp Int
-  badge Int
-  activityPoint Int
+  name String
+  path String
+  mimetype String
+  mentor Mentor?
 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
-}
-
-model StudentDetail {
-  id String @id @default(cuid())
-  score Int
-  
 }
 
 model Course {
   id String @id @default(cuid())
-  name String
-  detail String?
+  dateStart DateTime
+  dateEnd DateTime
+  courseType String
+  room String?
+  linkClass String?
+  currentCapacity Int
+  classCapacity Int
+  mentor Mentor @relation(fields: [mentorId], references: [id])
+  mentorId String
+  students CourseStudent[]
 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
 }
+
+model CourseStudent {
+  studentId String
+  courseId String
+  student Student @relation(fields: [studentId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+  @@id([studentId, courseId])
+}
+

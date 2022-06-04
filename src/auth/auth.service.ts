@@ -32,7 +32,7 @@ export class AuthService {
 
     // handle kalo misal ada error
     try {
-      const user = await this.prismaService.user.create({
+      const user = await this.prismaService.student.create({
         data: {
           ...data,
           password: hashedPassword,
@@ -55,7 +55,7 @@ export class AuthService {
   }
 
   async login(data: LoginDto) {
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.prismaService.student.findUnique({
       where: {
         email: data.email,
       },
@@ -83,7 +83,7 @@ export class AuthService {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       });
 
-      const user = await this.prismaService.user.findUnique({
+      const user = await this.prismaService.student.findUnique({
         where: {
           id: payload.userId,
         },
@@ -114,7 +114,7 @@ export class AuthService {
   }
 
   async validateUser(userId: string) {
-    return await this.prismaService.user.findUnique({
+    return await this.prismaService.student.findUnique({
       where: {
         id: userId,
       },

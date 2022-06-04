@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ProfilePictureModule } from './profile-picture/profile-picture.module';
 import { UsersModule } from './users/users.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { MentorModule } from './mentor/mentor.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     ProfilePictureModule,
     UsersModule,
+    ScheduleModule,
+    MentorModule,
   ],
   controllers: [AppController],
   providers: [

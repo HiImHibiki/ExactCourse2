@@ -9,7 +9,7 @@ import {
   Res,
   StreamableFile,
 } from '@nestjs/common';
-import { User } from '../common/decorators/user.decorator';
+import { Student } from '../common/decorators/student.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
 import { createReadStream } from 'fs';
@@ -21,7 +21,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 export class ProfilePictureController {
   constructor(private readonly profilePictureService: ProfilePictureService) {}
 
-  @Post()
+  @Post('student')
   @UseInterceptors(
     FileInterceptor('file', {
       dest: './uploads',
@@ -38,7 +38,7 @@ export class ProfilePictureController {
     }),
   )
   async saveFile(
-    @User('id') userId: string,
+    @Student('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const profilePicture = await this.profilePictureService.saveFile(userId, {
@@ -50,7 +50,7 @@ export class ProfilePictureController {
   }
 
   @Public()
-  @Get(':id')
+  @Get('student/:id')
   async getFile(
     @Param('id') id: string,
     @Res({ passthrough: true }) res: Response,
