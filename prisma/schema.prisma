@@ -35,6 +35,20 @@ model Student {
   birthday DateTime
   gender Gender
   courses CourseStudent[]
+  studentStatus StudentStatus? @relation(fields: [studentStatusId], references: [id])
+  studentStatusId String? @unique
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}
+
+model StudentStatus {
+  id String @id @default(cuid())
+  attendance Int
+  level Int
+  badge Int
+  expPoint Int
+  student Student?
 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt

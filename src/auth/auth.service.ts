@@ -39,6 +39,17 @@ export class AuthService {
           birthday: new Date(data.birthday), // ini gara2 date dari body bentuknya "YYYY-MM-DD"
         },
       });
+      await this.prismaService.studentStatus.create({
+        data: {
+          attendance: 0,
+          badge: 0,
+          expPoint: 0,
+          level: 1,
+          student: {
+            connect: { id: user.id },
+          },
+        },
+      });
 
       return this.generateTokens({ userId: user.id });
     } catch (error) {
