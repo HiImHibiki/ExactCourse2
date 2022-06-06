@@ -37,6 +37,8 @@ model Student {
   courses CourseStudent[]
   studentStatus StudentStatus? @relation(fields: [studentStatusId], references: [id])
   studentStatusId String? @unique
+  forum Forum[]
+  comment Comment[]
 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
@@ -114,3 +116,45 @@ model CourseStudent {
   @@id([studentId, courseId])
 }
 
+model Forum {
+  id String @id @default(cuid())
+  title String
+  tag String
+  message String
+  comment Comment[]
+  upload ForumUpload? @relation(fields: [uploadId], references: [id])
+  uploadId String? @unique
+  student Student @relation(fields: [studentId], references: [id])
+  studentId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id String @id @default(cuid())
+  message String
+  like Int
+  dislike Int
+  forum Forum @relation(fields: [forumId], references: [id])
+  forumId String
+  upload ForumUpload? @relation(fields: [uploadId], references: [id])
+  uploadId String? @unique
+  student Student @relation(fields: [studentId], references: [id])
+  studentId String
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}
+
+model ForumUpload {
+  id String @id @default(cuid())
+  name String
+  path String
+  mimetype String
+  forum Forum?
+  comment Comment?
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}

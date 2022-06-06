@@ -11,6 +11,7 @@ import { ProfilePictureModule } from './profile-picture/profile-picture.module';
 import { UsersModule } from './users/users.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { MentorModule } from './mentor/mentor.module';
+import { ForumModule } from './forum/forum.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MentorModule } from './mentor/mentor.module';
     UsersModule,
     ScheduleModule,
     MentorModule,
+    ForumModule,
   ],
   controllers: [AppController],
   providers: [
