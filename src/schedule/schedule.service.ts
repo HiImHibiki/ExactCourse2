@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Student } from '@prisma/client';
+import { Student, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateScheduleDTO } from './dto/create-schedule.dto';
 
@@ -61,7 +61,7 @@ export class ScheduleService {
     return schedules;
   }
 
-  async addStudentToSchedule(courseId: string, student: Student) {
+  async addStudentToSchedule(courseId: string, user: User) {
     const course = await this.prismaService.course.findUnique({
       where: { id: courseId },
     });
@@ -72,12 +72,13 @@ export class ScheduleService {
       throw new BadRequestException('Class is full');
     }
 
-    const studentStatus = await this.prismaService.studentStatus.findUnique({
+    const student = await this.prismaService.student.findUnique({
       where: {
-        id: student.studentStatusId,
+        userId: user.id,
       },
     });
-    if (studentStatus.attendance == 0) {
+
+    if (student.attendance == 0) {
       throw new BadRequestException(
         'Your attendance is 0. Please add more attendance',
       );
@@ -115,17 +116,14 @@ export class ScheduleService {
       },
     });
 
-    const level = Math.floor((studentStatus.expPoint + 5) / 100) + 1;
-
-    const updateStatus = await this.prismaService.studentStatus.update({
+    const updateStatus = await this.prismaService.student.update({
       where: {
-        id: student.studentStatusId,
+        id: student.id,
       },
       data: {
         expPoint: {
           increment: 5,
         },
-        level: level,
       },
     });
 

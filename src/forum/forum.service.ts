@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Student } from '@prisma/client';
+import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCommentDTO } from './dto/create-comment.dto';
 import { CreateForumDTO } from './dto/create-forum.dto';
@@ -12,15 +12,15 @@ import { CreateForumDTO } from './dto/create-forum.dto';
 export class ForumService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async postForum(data: CreateForumDTO, student: Student) {
+  async postForum(data: CreateForumDTO, user: User) {
     try {
       const newForum = await this.prismaService.forum.create({
         data: {
           title: data.title,
           tag: data.tag,
           message: data.message,
-          student: {
-            connect: { id: student.id },
+          user: {
+            connect: { id: user.id },
           },
         },
       });
@@ -60,7 +60,7 @@ export class ForumService {
     }
   }
 
-  async postComment(data: CreateCommentDTO, forumId: string, student: Student) {
+  async postComment(data: CreateCommentDTO, forumId: string, user: User) {
     try {
       const forum = await this.prismaService.forum.findUnique({
         where: {
@@ -79,8 +79,8 @@ export class ForumService {
           forum: {
             connect: { id: forumId },
           },
-          student: {
-            connect: { id: student.id },
+          user: {
+            connect: { id: user.id },
           },
         },
       });

@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { Role } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -14,6 +15,7 @@ import { RegisterDto } from './dto/register.dto';
 import { hash, compare } from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +23,10 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
   ) {}
 
-  async register(data: RegisterDto) {
+  async register(data: RegisterDto, role: Role) {
     // 1. Hash user password [X]
     // 2. Insert to database with hashed password [X]
     // 3. Generate JWT token [X]
@@ -32,24 +35,13 @@ export class AuthService {
 
     // handle kalo misal ada error
     try {
-      const user = await this.prismaService.student.create({
-        data: {
+      const user = await this.usersService.createUser(
+        {
           ...data,
           password: hashedPassword,
-          birthday: new Date(data.birthday), // ini gara2 date dari body bentuknya "YYYY-MM-DD"
         },
-      });
-      await this.prismaService.studentStatus.create({
-        data: {
-          attendance: 0,
-          badge: 0,
-          expPoint: 0,
-          level: 1,
-          student: {
-            connect: { id: user.id },
-          },
-        },
-      });
+        role,
+      );
 
       return this.generateTokens({ userId: user.id });
     } catch (error) {
@@ -66,10 +58,8 @@ export class AuthService {
   }
 
   async login(data: LoginDto) {
-    const user = await this.prismaService.student.findUnique({
-      where: {
-        email: data.email,
-      },
+    const user = await this.usersService.findOne({
+      email: data.email,
     });
 
     if (!user) {
@@ -94,10 +84,8 @@ export class AuthService {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       });
 
-      const user = await this.prismaService.student.findUnique({
-        where: {
-          id: payload.userId,
-        },
+      const user = await this.usersService.findOne({
+        id: payload.userId,
       });
 
       return this.generateTokens({ userId: user.id });
@@ -125,10 +113,8 @@ export class AuthService {
   }
 
   async validateUser(userId: string) {
-    return await this.prismaService.student.findUnique({
-      where: {
-        id: userId,
-      },
+    return await this.usersService.findOne({
+      id: userId,
     });
   }
 }

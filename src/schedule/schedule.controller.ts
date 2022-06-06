@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Student } from 'src/common/decorators/student.decorator';
+import { User } from 'src/common/decorators/user.decorator';
 import { CreateScheduleDTO } from './dto/create-schedule.dto';
 import { ScheduleService } from './schedule.service';
 
@@ -18,13 +18,13 @@ export class ScheduleController {
   }
 
   @Post(':id')
-  async addStudentToSchedule(@Param('id') id: string, @Student() student) {
+  async addStudentToSchedule(@Param('id') id: string, @User() user) {
     // console.log(typeof student.id);
-    return await this.scheduleService.addStudentToSchedule(id, student);
+    return await this.scheduleService.addStudentToSchedule(id, user);
   }
 
   @Get('myclass')
-  async getMySchedules(@Student() student) {
-    return await this.scheduleService.getMySchedules(student);
+  async getMySchedules(@User() user) {
+    return await this.scheduleService.getMySchedules(user);
   }
 }

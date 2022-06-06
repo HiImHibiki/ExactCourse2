@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { Student } from '../common/decorators/student.decorator';
+import { Body, Controller, Post } from '@nestjs/common';
+import { User } from '../common/decorators/user.decorator';
 import { AddAttendanceDTO } from './dto/add-attendance.dto';
 import { UsersService } from './users.service';
 
@@ -7,13 +7,8 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Get('me')
-  async getMe(@Student() user) {
-    return await this.userService.getMe(user);
-  }
-
   @Post('attendance')
-  async addAttendance(@Body() data: AddAttendanceDTO, @Student() user) {
+  async addAttendance(@Body() data: AddAttendanceDTO, @User() user) {
     return await this.userService.addAttendance(data, user.studentStatusId);
   }
 }

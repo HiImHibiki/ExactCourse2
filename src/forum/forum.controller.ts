@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Student } from 'src/common/decorators/student.decorator';
+import { User } from 'src/common/decorators/user.decorator';
 import { CreateCommentDTO } from './dto/create-comment.dto';
 import { CreateForumDTO } from './dto/create-forum.dto';
 import { ForumService } from './forum.service';
@@ -9,8 +9,8 @@ export class ForumController {
   constructor(private readonly forumService: ForumService) {}
 
   @Post()
-  async postForum(@Body() data: CreateForumDTO, @Student() student) {
-    return await this.forumService.postForum(data, student);
+  async postForum(@Body() data: CreateForumDTO, @User() user) {
+    return await this.forumService.postForum(data, user);
   }
 
   @Get()
@@ -27,8 +27,8 @@ export class ForumController {
   async postComment(
     @Body() data: CreateCommentDTO,
     @Param('id') id: string,
-    @Student() student,
+    @User() user,
   ) {
-    return await this.forumService.postComment(data, id, student);
+    return await this.forumService.postComment(data, id, user);
   }
 }
