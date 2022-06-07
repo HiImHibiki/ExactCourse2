@@ -10,7 +10,6 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Role } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { hash, compare } from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
@@ -20,7 +19,6 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
@@ -53,7 +51,7 @@ export class AuthService {
         throw new ConflictException('User already exists'); // status code 409
       }
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Fail to create user');
     }
   }
 
